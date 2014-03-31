@@ -1,16 +1,18 @@
-program smallMatrix
+subroutine smallMatrix(n,eigenvalues)
 
 implicit none
+
+integer,intent(IN)::n
+double precision,dimension(n),intent(OUT)::eigenvalues
+
 double precision,dimension(:,:),allocatable::Matrix
-double precision,dimension(:),allocatable::eigenvalues
 double precision,dimension(:),allocatable::work
 integer i,j,stat
-integer n,l
+integer l
 
-n=4096
 l=n*(3+n/2)
 
-allocate(Matrix(n,n),eigenvalues(n))
+allocate(Matrix(n,n))
 allocate(work(l))
 Matrix(:,:)=0.d0
 
@@ -27,16 +29,7 @@ do i=1,n
   enddo
 enddo
 
-if(n<4) write(*,*) Matrix
-
 call dsyev('V','U',n,Matrix,n,eigenvalues,work,l,stat)
 
-write(*,*)
-if(stat .eq. 0) then
-  write(*,*) eigenvalues
-else
-  write(*,*) 'DSYEV failed!'
-endif
 
-
-end program smallMatrix
+end subroutine smallMatrix
