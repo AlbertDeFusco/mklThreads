@@ -1,9 +1,10 @@
 program smallMatrix
 
+implicit none
 double precision,dimension(:,:),allocatable::Matrix
 double precision,dimension(:),allocatable::eigenvalues
 double precision,dimension(:),allocatable::work
-integer i,stat
+integer i,j,stat
 integer n,l
 
 n=4096
