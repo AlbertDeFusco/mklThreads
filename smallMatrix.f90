@@ -1,18 +1,20 @@
-subroutine smallMatrix(n,eigenvalues)
+subroutine smallMatrix(iblock,n)
+
+use omp_lib
 
 implicit none
 
 integer,intent(IN)::n
-double precision,dimension(n),intent(OUT)::eigenvalues
+double precision,dimension(:),allocatable::eigenvalues
 
 double precision,dimension(:,:),allocatable::Matrix
 double precision,dimension(:),allocatable::work
-integer i,j,stat
-integer l
+integer i,j,l,stat,iblock
+double precision::wtime
 
 l=n*(3+n/2)
 
-allocate(Matrix(n,n))
+allocate(Matrix(n,n),eigenvalues(n))
 allocate(work(l))
 Matrix(:,:)=0.d0
 
@@ -29,7 +31,10 @@ do i=1,n
   enddo
 enddo
 
+wtime = omp_get_wtime()
 call dsyev('V','U',n,Matrix,n,eigenvalues,work,l,stat)
+wtime = omp_get_wtime() - wtime
+write(6,'("  block ",i6,": ",f12.8," seconds")') iblock,wtime
 
 
 end subroutine smallMatrix
