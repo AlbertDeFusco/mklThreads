@@ -1,6 +1,7 @@
 subroutine smallMatrix(iblock,n)
 
 use omp_lib
+use mkl_service
 
 implicit none
 
