@@ -1,7 +1,10 @@
 program bigMatrix
 
 use omp_lib
+
+#ifdef LOCAL_MKL_THREADS
 use mkl_service
+#endif
 
 implicit none
 integer::i,j

@@ -8,7 +8,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 ### Source files and executables
-set(SOURCES bigMatrix.F90 smallMatrix.F90 mkl_service.f90)
+set(SOURCES bigMatrix.F90 smallMatrix.F90)
 
 
 option(OPENMP "Enable OpenMP" OFF)
@@ -17,6 +17,10 @@ option(MKL_THREADS "Enable MKL threading" OFF)
 option(ALL_BINARIES "Build all threading combinations" OFF)
 
 set(CMAKE_Fortran_FLAGS ${CMAKE_Fortran_FLAGS} "-openmp")
+
+if(LOCAL_MKL_THREADS)
+  file(APPEND SOURCES mkl_service.f90)
+endif(LOCAL_MKL_THREADS)
 
 
 if(ALL_BINARIES)
