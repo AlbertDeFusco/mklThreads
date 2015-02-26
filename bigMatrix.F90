@@ -10,7 +10,8 @@ implicit none
 integer::i,j
 integer::nBig,nSmall,mkl_threads,mkl_num_threads,mth
 character(len=32)::arg,env
-double precision::wtime,wtime2
+double precision::wtime,blockTime
+double precision,dimension(:),allocatable::blockTimes
 
 
 call getarg(1,arg)
@@ -34,27 +35,33 @@ write(6,'("  small blocks are ",i6,",",i6)') nSmall,nSmall
 write(6,*)
 write(6,'("Diagonalizing")')
 
+allocate(blockTimes(nBig))
+
 wtime = omp_get_wtime()
 
 #ifdef OMP
-!$omp parallel
-!$omp do
+!$omp parallel do schedule(runtime)
 #endif
 do i=1,nBig
 #ifdef LOCAL_MKL_THREADS
   mth=mkl_set_num_threads_local(mkl_threads)
 #endif
 
-  call smallMatrix(i,nSmall)
+  call smallMatrix(nSmall,i)
+  !blockTimes(i)=blockTime
 
 #ifdef LOCAL_MKL_THREADS
   mth=mkl_set_num_threads_local(mth)
 #endif
 enddo
 #ifdef OMP
-!$omp end do
-!$omp end parallel
+!$omp end parallel do
 #endif
+
+!do i=1,nBig
+  !write(6,'("  block ",i6,": ",f15.10," seconds")') i,blockTimes(i)
+  !write(6,*) i,blockTimes(i)
+!enddo
 
 wtime = omp_get_wtime() - wtime
 write(6,*)

@@ -1,16 +1,16 @@
-subroutine smallMatrix(iblock,n)
+subroutine smallMatrix(n,iblock)
 
-use mkl_service
+use omp_lib
 
 implicit none
 
 integer,intent(IN)::n
-double precision,dimension(:),allocatable::eigenvalues
+double precision::wtime
 
+double precision,dimension(:),allocatable::eigenvalues
 double precision,dimension(:,:),allocatable::Matrix
 double precision,dimension(:),allocatable::work
 integer i,j,l,stat,iblock
-double precision::wtime
 
 l=n*(3+n/2)
 
